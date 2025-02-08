@@ -2,7 +2,6 @@
 
 // Model class - handles business logic and data
 class Model {
-private:
     int number;
     int square;
 
@@ -11,14 +10,15 @@ private:
     }
 
 public:
-    Model() : number(0), square(0) {}
+    Model() : number(0), square(0) {
+    }
 
-    void setNumber(int num) {
+    void setNumber(const int num = 0) {
         number = num;
         calculateSquare();
     }
 
-    int getSquare() const {
+    [[nodiscard]] int getSquare() const {
         return square;
     }
 };
@@ -26,37 +26,37 @@ public:
 // View class - handles user interface
 class View {
 public:
-    int getUserInput() {
+    static int getUserInput() {
         int input;
         std::cout << "Enter an integer number: ";
         std::cin >> input;
         return input;
     }
 
-    void displayResult(int square) {
-        std::cout << "The square of the number is: " << square << std::endl;
+    static void displayResult(const int number, const int square) {
+        std::cout << std::endl << "The square of the [" << number << "] is: " << square << std::endl;
     }
 };
 
 // Controller class - coordinates Model and View
 class Controller {
-private:
-    Model& model;
-    View& view;
+    Model &model;
+    View &view;
 
 public:
-    Controller(Model& m, View& v) : model(m), view(v) {}
+    Controller(Model &m, View &v) : model(m), view(v) {
+    }
 
-    void processUserInput() {
+    void processUserInput() const {
         // Get input from view
-        int number = view.getUserInput();
+        const int number = View::getUserInput();
 
         // Update model
         model.setNumber(number);
 
         // Get result from model and update view
-        int square = model.getSquare();
-        view.displayResult(square);
+        const int square = model.getSquare();
+        View::displayResult(number, square);
     }
 };
 
@@ -65,7 +65,7 @@ int main() {
     // Initialize MVC components
     Model model;
     View view;
-    Controller controller(model, view);
+    const Controller controller(model, view);
 
     // Start the application
     controller.processUserInput();
